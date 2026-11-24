@@ -1,0 +1,106 @@
+/* Levanter Bot Hosting by AYAN XD — dark navy + gold theme.
+   Plain local CSS, system fonts only, zero external dependencies. */
+:root {
+  --bg: #0a0f1e;
+  --bg-soft: #0d1428;
+  --surface: #131a2e;
+  --surface-2: #1a2340;
+  --border: #2a3555;
+  --gold: #f5b301;
+  --gold-soft: #ffd166;
+  --gold-deep: #c98f00;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --link: #ffd166;
+  --green: #22c55e;
+  --green-bg: #14532d;
+  --green-text: #86efac;
+  --red: #ef4444;
+  --red-bg: #7f1d1d;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+.wrap { max-width: 960px; margin: 0 auto; padding: 16px; }
+.wrap.narrow { max-width: 420px; margin-top: 8vh; }
+
+/* ---- Brand header (every page) ---- */
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.brand-mark { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color: #1a1200; font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex: none; }
+.brand-name { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.02em; color: var(--text); line-height: 1.1; }
+.brand-name em { font-style: normal; color: var(--gold); }
+.brand-by { display: inline-block; margin-top: 2px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold-deep); border-radius: 999px; padding: 1px 8px; }
+nav a { color: var(--link); margin-right: 14px; text-decoration: none; font-weight: 600; }
+nav a:hover { text-decoration: underline; }
+a { color: var(--link); }
+
+/* ---- Cards, text, forms ---- */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+h2 { margin-top: 0; font-size: 1.15rem; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+.error { color: #fca5a5; }
+code { background: var(--bg-soft); border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; font-size: 0.9em; }
+label { display: block; margin-bottom: 12px; font-weight: 600; }
+input { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #475569; border-radius: 8px; background: var(--bg-soft); color: var(--text); font-size: 1rem; }
+input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(245, 179, 1, 0.25); }
+button { padding: 10px 16px; border: 0; border-radius: 8px; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color: #1a1200; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin: 2px; }
+button:hover { filter: brightness(1.12); }
+button:disabled { opacity: 0.4; cursor: default; }
+button.danger { background: var(--red-bg); color: #fecaca; }
+button.danger:hover { background: #991b1b; }
+button.ghost { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+button.ghost:hover { background: rgba(245, 179, 1, 0.12); }
+.linklike { background: none; color: var(--link); padding: 0; margin: 0; font-weight: 600; }
+.linklike:hover { background: none; text-decoration: underline; }
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 9px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
+td.actions { white-space: nowrap; }
+.pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; }
+.pill.on { background: var(--green-bg); color: var(--green-text); }
+.pill.off { background: #3f3f46; color: #d4d4d8; }
+.meter { height: 14px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; border: 1px solid var(--border); }
+.meter .fill { height: 100%; background: linear-gradient(90deg, var(--gold-deep), var(--gold), var(--gold-soft)); }
+.logview { background: #020617; color: #a5f3fc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; max-height: 420px; overflow: auto; white-space: pre-wrap; word-break: break-word; font-size: 0.82rem; }
+
+/* ---- Landing page ---- */
+.hero { text-align: center; padding: 56px 16px 40px; }
+.hero .eyebrow { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold-deep); border-radius: 999px; padding: 4px 12px; margin-bottom: 18px; }
+.hero h1 { font-size: 2.6rem; line-height: 1.1; margin: 0 0 14px; font-weight: 800; }
+.hero h1 .gold { background: linear-gradient(90deg, var(--gold-soft), var(--gold), var(--gold-deep)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p.tagline { font-size: 1.15rem; color: var(--muted); max-width: 620px; margin: 0 auto 26px; }
+.hero .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.hero .cta a { text-decoration: none; }
+.btn { display: inline-block; padding: 12px 26px; border-radius: 10px; font-weight: 800; font-size: 1rem; cursor: pointer; }
+.btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color: #1a1200; }
+.btn-gold:hover { filter: brightness(1.12); }
+.btn-ghost { border: 1px solid var(--gold); color: var(--gold); background: transparent; }
+.btn-ghost:hover { background: rgba(245, 179, 1, 0.12); }
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 36px 0; }
+.feature { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+.feature .icon { font-size: 1.6rem; margin-bottom: 8px; }
+.feature h3 { margin: 0 0 6px; font-size: 1.05rem; }
+.feature h3 span { color: var(--gold); }
+.feature p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.steps { margin: 36px 0; }
+.steps h2, .features-title { text-align: center; font-size: 1.4rem; margin-bottom: 18px; }
+.step { display: flex; gap: 14px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
+.step-num { width: 34px; height: 34px; flex: none; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color: #1a1200; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.step h3 { margin: 0 0 4px; font-size: 1.05rem; }
+.step p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.landing-footer { text-align: center; color: var(--muted); border-top: 1px solid var(--border); padding: 22px 0 10px; margin-top: 36px; font-size: 0.92rem; }
+.landing-footer strong { color: var(--gold); }
+.login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; text-align: center; }
+.login-card h1 { font-size: 1.5rem; margin: 0 0 6px; }
+.login-card h1 span { color: var(--gold); }
+
+@media (max-width: 720px) {
+  .features { grid-template-columns: 1fr; }
+  .hero { padding: 36px 8px 28px; }
+  .hero h1 { font-size: 1.9rem; }
+  .hero p.tagline { font-size: 1rem; }
+  header h1, .brand-name { font-size: 1.1rem; }
+  td.actions button { display: block; width: 100%; margin: 3px 0; }
+}

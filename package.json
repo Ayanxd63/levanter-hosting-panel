@@ -1,0 +1,1 @@
+{"dependencies":{"express":"^4.19.2"},"description":"Self-hosted panel to deploy and manage Levanter WhatsApp bots on a single VPS. No database, no build step.","license":"MIT","main":"server.js","name":"levanter-hosting-panel","scripts":{"start":"node server.js"},"version":"1.0.0"}
