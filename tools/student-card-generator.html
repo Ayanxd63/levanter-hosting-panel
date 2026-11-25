@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Card Generator — Free Tools | AYAN XD</title>
+<meta name="description" content="Make a fun sample student card for games, pranks and design practice. SAMPLE ONLY — clearly marked, not a real ID.">
+<link rel="stylesheet" href="tools.css">
+</head>
+<body><div class="wrap">
+<header><a class="brand" href="/"><span class="brand-mark">&#9889;</span><span><span class="brand-name">Levanter <em>Bot Hosting</em></span><br><span class="brand-by">by AYAN XD</span></span></a>
+<nav><a href="/">Home</a><a href="index.html">All Tools</a></nav></header>
+<main>
+<p class="crumb"><a href="/">Home</a> &middot; <a href="index.html">Free Tools</a> &middot; Student Card Generator</p>
+<h1>&#127891; Student Card Generator</h1>
+<p class="muted">Make a fun sample student card for games, pranks and design practice. Fill in the details, pick a colour, and download your card.</p>
+<div class="note warn"><strong>SAMPLE ONLY — NOT A REAL ID.</strong> Every card this tool makes is clearly marked SAMPLE and is for fun, games and design practice only. It is not a real student ID, and must never be used to pretend to be a student of any real school or college.</div>
+<div class="card">
+<label>Student name <input type="text" id="scName" placeholder="e.g. Ayan Khan" maxlength="40"></label>
+<label>School / College <input type="text" id="scSchool" placeholder="e.g. Government Degree College Totakan" maxlength="60"></label>
+<label>Class / Grade <input type="text" id="scClass" placeholder="e.g. BS Computer Science — 7th Semester" maxlength="50"></label>
+<label>Roll number <input type="text" id="scRoll" placeholder="e.g. 1234" maxlength="20"></label>
+<label>Session <input type="text" id="scSession" placeholder="e.g. 2023–2027" maxlength="20"></label>
+<label>Card colour
+<select id="scTheme">
+<option value="navy">Navy + Gold (default)</option>
+<option value="green">Green</option>
+<option value="purple">Purple</option>
+<option value="red">Red</option>
+</select></label>
+<label>Photo (optional — stays in your browser)
+<input type="file" id="scPhoto" accept="image/*" onchange="readPhoto(this)"></label>
+<div id="scErr" style="color:#f87171"></div>
+<button onclick="makeStudentCard()">Make my card</button>
+<button class="ghost" onclick="downloadCard()">Download card (PNG)</button>
+<button class="ghost" onclick="fillSample()">Fill a sample</button>
+</div>
+<div class="card"><h2>Your card</h2><div class="output" id="cardOut">Fill in the details above, then press "Make my card".</div></div>
+<p class="privacy">&#128274; 100% client-side &mdash; everything you type, including your photo, stays in your browser. Nothing is sent to any server, and nothing is stored.</p>
+</main>
+<footer class="landing-footer">Developed by <strong>AYAN XD</strong> &middot; <a href="/">ayanxd.cc.cd</a> &middot; Free forever</footer>
+</div>
+<script>
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.value !== undefined ? el.value : el.textContent;
+  if (!text) return;
+  function done() { if (btn) { var old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'note'; document.querySelector('main').appendChild(t); }
+  t.textContent = msg;
+}
+</script>
+<script>
+var photoData = '';
+var THEMES = {
+  navy: { bg: '#0a0f1e', band: '#f5b301', bandText: '#1a1200', text: '#f1f5f9' },
+  green: { bg: '#06281a', band: '#22c55e', bandText: '#04120a', text: '#f1f5f9' },
+  purple: { bg: '#1e1033', band: '#c084fc', bandText: '#1e1033', text: '#f1f5f9' },
+  red: { bg: '#2b0a0a', band: '#ef4444', bandText: '#ffffff', text: '#f1f5f9' }
+};
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function cardInitials(name) {
+  var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '?';
+  var first = parts[0].charAt(0);
+  var second = parts.length > 1 ? parts[1].charAt(0) : '';
+  return (first + second).toUpperCase();
+}
+function readPhoto(input) {
+  if (!input || !input.files || !input.files[0]) return;
+  if (typeof FileReader === 'undefined') return;
+  var reader = new FileReader();
+  reader.onload = function (e) { photoData = e.target.result || ''; };
+  reader.readAsDataURL(input.files[0]);
+}
+function fillSample() {
+  document.getElementById('scName').value = 'Ayan Khan';
+  document.getElementById('scSchool').value = 'Government Degree College Totakan';
+  document.getElementById('scClass').value = 'BS Computer Science — 7th Semester';
+  document.getElementById('scRoll').value = '1234';
+  document.getElementById('scSession').value = '2023–2027';
+  makeStudentCard();
+}
+function makeStudentCard() {
+  var err = document.getElementById('scErr'); err.textContent = '';
+  var name = document.getElementById('scName').value.trim();
+  var school = document.getElementById('scSchool').value.trim();
+  var cls = document.getElementById('scClass').value.trim();
+  var roll = document.getElementById('scRoll').value.trim();
+  var session = document.getElementById('scSession').value.trim();
+  var theme = THEMES[document.getElementById('scTheme').value] || THEMES.navy;
+  if (!name || !school) { err.textContent = 'Student name and school are needed to make the card.'; return; }
+  var photo = photoData
+    ? '<img src="' + photoData + '" alt="Student photo" style="width:92px;height:112px;object-fit:cover;border-radius:10px;border:3px solid ' + theme.band + '">'
+    : '<div style="width:92px;height:112px;border-radius:10px;background:' + theme.band + ';color:' + theme.bandText + ';display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800">' + escapeHtml(cardInitials(name)) + '</div>';
+  var html = ''
+    + '<div style="max-width:520px;margin:0 auto;background:' + theme.bg + ';border:2px solid ' + theme.band + ';border-radius:16px;overflow:hidden;color:' + theme.text + ';font-family:system-ui,sans-serif">'
+    + '<div style="background:' + theme.band + ';color:' + theme.bandText + ';text-align:center;font-weight:800;letter-spacing:.12em;padding:8px;font-size:.85rem">SAMPLE &middot; NOT A REAL ID</div>'
+    + '<div style="padding:18px;display:flex;gap:16px;align-items:flex-start">'
+    + photo
+    + '<div style="min-width:0"><div style="font-size:1.25rem;font-weight:800;line-height:1.2">' + escapeHtml(name) + '</div>'
+    + '<div style="opacity:.85;margin-top:2px">' + escapeHtml(school) + '</div>'
+    + '<div style="margin-top:10px;font-size:.95rem">Class: <strong>' + escapeHtml(cls || '—') + '</strong></div>'
+    + '<div style="font-size:.95rem">Roll No: <strong>' + escapeHtml(roll || '—') + '</strong></div>'
+    + '<div style="font-size:.95rem">Session: <strong>' + escapeHtml(session || '—') + '</strong></div></div>'
+    + '</div>'
+    + '<div style="padding:0 18px 14px;font-size:.8rem;opacity:.7">Fun / sample card made on ayanxd.cc.cd — for games and design practice only.</div>'
+    + '</div>';
+  document.getElementById('cardOut').innerHTML = html;
+}
+function downloadCard() {
+  var out = document.getElementById('cardOut');
+  if (!out || !out.innerHTML || out.innerHTML.indexOf('SAMPLE') === -1) { toast('Make a card first, then download it.'); return; }
+  try {
+    var name = document.getElementById('scName').value.trim() || 'student';
+    var school = document.getElementById('scSchool').value.trim();
+    var cls = document.getElementById('scClass').value.trim();
+    var roll = document.getElementById('scRoll').value.trim();
+    var session = document.getElementById('scSession').value.trim();
+    var theme = THEMES[document.getElementById('scTheme').value] || THEMES.navy;
+    var canvas = document.createElement('canvas');
+    canvas.width = 856; canvas.height = 540;
+    var c = canvas.getContext('2d');
+    if (!c) { toast('PNG download is not supported in this browser — take a screenshot of the card instead.'); return; }
+    c.fillStyle = theme.bg; c.fillRect(0, 0, 856, 540);
+    c.fillStyle = theme.band; c.fillRect(0, 0, 856, 64);
+    c.fillStyle = theme.bandText; c.font = 'bold 30px system-ui, sans-serif'; c.textAlign = 'center';
+    c.fillText('SAMPLE  •  NOT A REAL ID', 428, 43);
+    c.textAlign = 'left'; c.fillStyle = theme.text;
+    c.font = 'bold 44px system-ui, sans-serif';
+    c.fillText(name.slice(0, 26), 300, 170);
+    c.font = '30px system-ui, sans-serif'; c.fillStyle = '#cbd5e1';
+    c.fillText(school.slice(0, 34), 300, 220);
+    c.fillStyle = theme.text; c.font = '28px system-ui, sans-serif';
+    c.fillText('Class:   ' + (cls || '—'), 300, 300);
+    c.fillText('Roll No: ' + (roll || '—'), 300, 350);
+    c.fillText('Session: ' + (session || '—'), 300, 400);
+    c.fillStyle = theme.band; c.beginPath(); c.arc(150, 280, 95, 0, Math.PI * 2); c.fill();
+    c.fillStyle = theme.bandText; c.font = 'bold 64px system-ui, sans-serif'; c.textAlign = 'center';
+    c.fillText(cardInitials(name), 150, 302);
+    c.textAlign = 'left'; c.fillStyle = '#94a3b8'; c.font = '22px system-ui, sans-serif';
+    c.fillText('Fun / sample card — ayanxd.cc.cd', 40, 500);
+    var a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'student-card-sample.png';
+    a.click();
+  } catch (e) { toast('Could not download the PNG — take a screenshot of the card instead.'); }
+}
+</script>
+</body></html>
