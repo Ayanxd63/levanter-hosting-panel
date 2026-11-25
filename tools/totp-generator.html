@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOTP Generator — Free Tools | AYAN XD</title>
+<meta name="description" content="Generate the current 6-digit authenticator code from your Base32 secret — like Google Authenticator, but right here in the browser. Your secret never leaves this page.">
+<link rel="stylesheet" href="tools.css">
+</head>
+<body><div class="wrap">
+<header><a class="brand" href="/"><span class="brand-mark">&#9889;</span><span><span class="brand-name">Levanter <em>Bot Hosting</em></span><br><span class="brand-by">by AYAN XD</span></span></a>
+<nav><a href="/">Home</a><a href="index.html">All Tools</a></nav></header>
+<main>
+<p class="crumb"><a href="/">Home</a> &middot; <a href="index.html">Free Tools</a> &middot; TOTP Generator</p>
+<h1>&#128272; TOTP Generator</h1>
+<p class="muted">Generate the current 6-digit authenticator code from your Base32 secret — like Google Authenticator, but right here in the browser. Your secret never leaves this page.</p>
+<div class="card">
+<label>Base32 secret (from the QR or setup key of the account)
+<input type="text" id="totpSecret" placeholder="e.g. JBSWY3DPEHPK3PXP" autocomplete="off" oninput="refreshTotp(true)"></label>
+<p class="muted small">Spaces are ignored. The secret is only used in this page — it is never sent anywhere.</p>
+</div>
+<div class="card"><h2>Current code</h2>
+<div class="big-code" id="totpCode">------</div>
+<p class="muted small" style="text-align:center">Next code in <span id="totpSecs">30</span>s</p>
+<div class="progress"><div class="fill" id="totpBar" style="width:100%"></div></div>
+<p class="error" id="totpErr"></p></div>
+<div class="note">Tip: to set up a new account, the site or app shows a Base32 secret (or a QR code). Paste that secret here and this page works like an authenticator app.</div>
+<p class="privacy">&#128274; 100% client-side &mdash; everything you type stays in your browser. Nothing is sent to any server, and nothing is stored.</p>
+</main>
+<footer class="landing-footer">Developed by <strong>AYAN XD</strong> &middot; <a href="/">ayanxd.cc.cd</a> &middot; Free forever</footer>
+</div>
+<script>
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.value !== undefined ? el.value : el.textContent;
+  if (!text) return;
+  function done() { if (btn) { var old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'note'; document.querySelector('main').appendChild(t); }
+  t.textContent = msg;
+}
+</script>
+<script>
+var B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+function b32decode(s) {
+  s = s.replace(/[\s=]/g, '').toUpperCase();
+  var bits = '';
+  for (var i = 0; i < s.length; i++) {
+    var v = B32.indexOf(s[i]);
+    if (v < 0) throw new Error('Invalid Base32 character: ' + s[i]);
+    bits += v.toString(2).padStart(5, '0');
+  }
+  var bytes = [];
+  for (var j = 0; j + 8 <= bits.length; j += 8) bytes.push(parseInt(bits.slice(j, j + 8), 2));
+  return new Uint8Array(bytes);
+}
+async function hotp(secretBytes, counter) {
+  var buf = new ArrayBuffer(8), view = new DataView(buf);
+  view.setUint32(0, Math.floor(counter / 4294967296));
+  view.setUint32(4, counter >>> 0);
+  var key = await crypto.subtle.importKey('raw', secretBytes, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+  var sig = new Uint8Array(await crypto.subtle.sign('HMAC', key, buf));
+  var off = sig[sig.length - 1] & 0x0f;
+  var code = ((sig[off] & 0x7f) << 24) | ((sig[off + 1] & 0xff) << 16) | ((sig[off + 2] & 0xff) << 8) | (sig[off + 3] & 0xff);
+  return String(code % 1000000).padStart(6, '0');
+}
+var _lastCounter = -1, _lastCode = '';
+async function refreshTotp(force) {
+  var err = document.getElementById('totpErr');
+  var sec = document.getElementById('totpSecret').value.trim();
+  var nowSec = Math.floor(Date.now() / 1000);
+  var remain = 30 - (nowSec % 30);
+  document.getElementById('totpSecs').textContent = remain;
+  document.getElementById('totpBar').style.width = (remain / 30 * 100) + '%';
+  if (!sec) { document.getElementById('totpCode').textContent = '------'; return; }
+  var counter = Math.floor(nowSec / 30);
+  if (counter === _lastCounter && !force) { document.getElementById('totpCode').textContent = _lastCode; return; }
+  try {
+    if (!window.crypto || !crypto.subtle) throw new Error('This tool needs a secure (https) page.');
+    var code = await hotp(b32decode(sec), counter);
+    _lastCounter = counter; _lastCode = code;
+    document.getElementById('totpCode').textContent = code;
+    err.textContent = '';
+  } catch (e) { err.textContent = e.message; document.getElementById('totpCode').textContent = '------'; }
+}
+setInterval(function(){ refreshTotp(false); }, 1000);
+refreshTotp(true);
+</script>
+</body></html>

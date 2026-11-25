@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Base64 Encoder / Decoder — Free Tools | AYAN XD</title>
+<meta name="description" content="Encode text to Base64 or decode Base64 back to text. Unicode-safe, with an optional URL-safe variant.">
+<link rel="stylesheet" href="tools.css">
+</head>
+<body><div class="wrap">
+<header><a class="brand" href="/"><span class="brand-mark">&#9889;</span><span><span class="brand-name">Levanter <em>Bot Hosting</em></span><br><span class="brand-by">by AYAN XD</span></span></a>
+<nav><a href="/">Home</a><a href="index.html">All Tools</a></nav></header>
+<main>
+<p class="crumb"><a href="/">Home</a> &middot; <a href="index.html">Free Tools</a> &middot; Base64 Encoder / Decoder</p>
+<h1>&#128279; Base64 Encoder / Decoder</h1>
+<p class="muted">Encode text to Base64 or decode Base64 back to text. Unicode-safe, with an optional URL-safe variant.</p>
+<div class="card">
+<label>Input
+<textarea id="b64in" placeholder="Type text to encode, or Base64 to decode"></textarea></label>
+<label class="inline"><input type="checkbox" id="urlsafe"> URL-safe Base64 (uses - and _ instead of + and /, no padding)</label>
+<div class="row"><button onclick="doB64('encode')">Encode</button><button onclick="doB64('decode')">Decode</button>
+<button class="ghost" onclick="swapB64()">Swap input / output</button></div>
+</div>
+<div class="card"><h2>Output</h2>
+<div class="output" id="b64out">—</div>
+<div class="row" style="margin-top:10px"><button class="ghost" onclick="copyText('b64out', this)">Copy output</button></div>
+<p class="error" id="b64err"></p></div>
+<p class="privacy">&#128274; 100% client-side &mdash; everything you type stays in your browser. Nothing is sent to any server, and nothing is stored.</p>
+</main>
+<footer class="landing-footer">Developed by <strong>AYAN XD</strong> &middot; <a href="/">ayanxd.cc.cd</a> &middot; Free forever</footer>
+</div>
+<script>
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.value !== undefined ? el.value : el.textContent;
+  if (!text) return;
+  function done() { if (btn) { var old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'note'; document.querySelector('main').appendChild(t); }
+  t.textContent = msg;
+}
+</script>
+<script>
+var _te = new TextEncoder(), _td = new TextDecoder();
+function b64encode(str, urlSafe) {
+  var bytes = _te.encode(str), bin = '';
+  bytes.forEach(function(b){ bin += String.fromCharCode(b); });
+  var out = btoa(bin);
+  if (urlSafe) out = out.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return out;
+}
+function b64decode(str, urlSafe) {
+  var s = str.trim();
+  if (urlSafe) s = s.replace(/-/g, '+').replace(/_/g, '/');
+  s += '='.repeat((4 - s.length % 4) % 4);
+  var bin = atob(s), bytes = Uint8Array.from(bin, function(c){ return c.charCodeAt(0); });
+  return _td.decode(bytes);
+}
+function doB64(mode) {
+  var err = document.getElementById('b64err'), out = document.getElementById('b64out');
+  err.textContent = '';
+  try {
+    var v = document.getElementById('b64in').value;
+    var urlSafe = document.getElementById('urlsafe').checked;
+    out.textContent = mode === 'encode' ? b64encode(v, urlSafe) : b64decode(v, urlSafe);
+  } catch (e) { out.textContent = '—'; err.textContent = 'Could not decode: not valid Base64. ' + e.message; }
+}
+function swapB64() {
+  var inp = document.getElementById('b64in'), out = document.getElementById('b64out');
+  if (out.textContent && out.textContent !== '—') { inp.value = out.textContent; out.textContent = '—'; }
+}
+</script>
+</body></html>

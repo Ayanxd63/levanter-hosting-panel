@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hash Generator — Free Tools | AYAN XD</title>
+<meta name="description" content="Compute MD5, SHA-1, SHA-256 and SHA-512 hashes for any text, side by side. Useful to verify file or text integrity.">
+<link rel="stylesheet" href="tools.css">
+<script src="vendor/md5.min.js"></script></head>
+<body><div class="wrap">
+<header><a class="brand" href="/"><span class="brand-mark">&#9889;</span><span><span class="brand-name">Levanter <em>Bot Hosting</em></span><br><span class="brand-by">by AYAN XD</span></span></a>
+<nav><a href="/">Home</a><a href="index.html">All Tools</a></nav></header>
+<main>
+<p class="crumb"><a href="/">Home</a> &middot; <a href="index.html">Free Tools</a> &middot; Hash Generator</p>
+<h1>&#128272; Hash Generator</h1>
+<p class="muted">Compute MD5, SHA-1, SHA-256 and SHA-512 hashes for any text, side by side. Useful to verify file or text integrity.</p>
+<div class="card">
+<label>Text to hash
+<textarea id="hin" placeholder="Type or paste text here" oninput="hashAll()"></textarea></label>
+<button onclick="hashAll()">Compute hashes</button>
+</div>
+<div class="card"><h2>Hashes</h2>
+<dl class="kv">
+<dt>MD5</dt><dd><span class="mono" id="md5out">—</span> <button class="small-btn ghost" onclick="copyText('md5out', this)">Copy</button></dd>
+<dt>SHA-1</dt><dd><span class="mono" id="sha1out">—</span> <button class="small-btn ghost" onclick="copyText('sha1out', this)">Copy</button></dd>
+<dt>SHA-256</dt><dd><span class="mono" id="sha256out">—</span> <button class="small-btn ghost" onclick="copyText('sha256out', this)">Copy</button></dd>
+<dt>SHA-512</dt><dd><span class="mono" id="sha512out">—</span> <button class="small-btn ghost" onclick="copyText('sha512out', this)">Copy</button></dd>
+</dl>
+<p class="muted small" id="hashNote"></p></div>
+<p class="privacy">&#128274; 100% client-side &mdash; everything you type stays in your browser. Nothing is sent to any server, and nothing is stored.</p>
+</main>
+<footer class="landing-footer">Developed by <strong>AYAN XD</strong> &middot; <a href="/">ayanxd.cc.cd</a> &middot; Free forever</footer>
+</div>
+<script>
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.value !== undefined ? el.value : el.textContent;
+  if (!text) return;
+  function done() { if (btn) { var old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'note'; document.querySelector('main').appendChild(t); }
+  t.textContent = msg;
+}
+</script>
+<script>
+function hex(buf) { return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2, '0'); }).join(''); }
+async function hashAll() {
+  var t = document.getElementById('hin').value;
+  document.getElementById('md5out').textContent = md5(t);
+  if (!window.crypto || !crypto.subtle) {
+    document.getElementById('hashNote').textContent = 'SHA hashes need a secure (https) page — open this page over https to compute them.';
+    return;
+  }
+  var data = new TextEncoder().encode(t);
+  document.getElementById('sha1out').textContent = hex(await crypto.subtle.digest('SHA-1', data));
+  document.getElementById('sha256out').textContent = hex(await crypto.subtle.digest('SHA-256', data));
+  document.getElementById('sha512out').textContent = hex(await crypto.subtle.digest('SHA-512', data));
+}
+</script>
+</body></html>

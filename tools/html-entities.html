@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Entity Encoder / Decoder — Free Tools | AYAN XD</title>
+<meta name="description" content="Encode special characters as HTML entities (&amp; &lt; &gt; etc.) or decode entities back to normal text.">
+<link rel="stylesheet" href="tools.css">
+</head>
+<body><div class="wrap">
+<header><a class="brand" href="/"><span class="brand-mark">&#9889;</span><span><span class="brand-name">Levanter <em>Bot Hosting</em></span><br><span class="brand-by">by AYAN XD</span></span></a>
+<nav><a href="/">Home</a><a href="index.html">All Tools</a></nav></header>
+<main>
+<p class="crumb"><a href="/">Home</a> &middot; <a href="index.html">Free Tools</a> &middot; HTML Entity Encoder / Decoder</p>
+<h1>&lt;/&gt; HTML Entity Encoder / Decoder</h1>
+<p class="muted">Encode special characters as HTML entities (&amp; &lt; &gt; etc.) or decode entities back to normal text.</p>
+<div class="card">
+<label>Input
+<textarea id="htmlin" placeholder="Type text or HTML entities"></textarea></label>
+<div class="row"><button onclick="doHtml('encode')">Encode</button><button onclick="doHtml('decode')">Decode</button>
+<button class="ghost" onclick="swapHtml()">Swap input / output</button></div>
+</div>
+<div class="card"><h2>Output</h2>
+<div class="output" id="htmlout">—</div>
+<div class="row" style="margin-top:10px"><button class="ghost" onclick="copyText('htmlout', this)">Copy output</button></div></div>
+<p class="privacy">&#128274; 100% client-side &mdash; everything you type stays in your browser. Nothing is sent to any server, and nothing is stored.</p>
+</main>
+<footer class="landing-footer">Developed by <strong>AYAN XD</strong> &middot; <a href="/">ayanxd.cc.cd</a> &middot; Free forever</footer>
+</div>
+<script>
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.value !== undefined ? el.value : el.textContent;
+  if (!text) return;
+  function done() { if (btn) { var old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'note'; document.querySelector('main').appendChild(t); }
+  t.textContent = msg;
+}
+</script>
+<script>
+function htmlEncode(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function htmlDecode(s) {
+  var ta = document.createElement('textarea');
+  ta.innerHTML = s;
+  return ta.value;
+}
+function doHtml(mode) {
+  var v = document.getElementById('htmlin').value;
+  document.getElementById('htmlout').textContent = mode === 'encode' ? htmlEncode(v) : htmlDecode(v);
+}
+function swapHtml() {
+  var inp = document.getElementById('htmlin'), out = document.getElementById('htmlout');
+  if (out.textContent && out.textContent !== '—') { inp.value = out.textContent; out.textContent = '—'; }
+}
+</script>
+</body></html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UUID Generator — Free Tools | AYAN XD</title>
+<meta name="description" content="Generate cryptographically random version 4 UUIDs, one at a time or in bulk.">
+<link rel="stylesheet" href="tools.css">
+</head>
+<body><div class="wrap">
+<header><a class="brand" href="/"><span class="brand-mark">&#9889;</span><span><span class="brand-name">Levanter <em>Bot Hosting</em></span><br><span class="brand-by">by AYAN XD</span></span></a>
+<nav><a href="/">Home</a><a href="index.html">All Tools</a></nav></header>
+<main>
+<p class="crumb"><a href="/">Home</a> &middot; <a href="index.html">Free Tools</a> &middot; UUID Generator</p>
+<h1>&#127922; UUID Generator</h1>
+<p class="muted">Generate cryptographically random version 4 UUIDs, one at a time or in bulk.</p>
+<div class="card">
+<label>How many?
+<select id="uuidCount"><option value="1">1 UUID</option><option value="5" selected>5 UUIDs</option><option value="10">10 UUIDs</option></select></label>
+<div class="row"><button onclick="genUuids()">Generate</button>
+<button class="ghost" onclick="copyText('uuidOut', this)">Copy all</button></div>
+</div>
+<div class="card"><h2>UUIDs</h2><div class="output" id="uuidOut">Press Generate</div></div>
+<p class="privacy">&#128274; 100% client-side &mdash; everything you type stays in your browser. Nothing is sent to any server, and nothing is stored.</p>
+</main>
+<footer class="landing-footer">Developed by <strong>AYAN XD</strong> &middot; <a href="/">ayanxd.cc.cd</a> &middot; Free forever</footer>
+</div>
+<script>
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.value !== undefined ? el.value : el.textContent;
+  if (!text) return;
+  function done() { if (btn) { var old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'note'; document.querySelector('main').appendChild(t); }
+  t.textContent = msg;
+}
+</script>
+<script>
+function uuidv4() {
+  var b = new Uint8Array(16);
+  crypto.getRandomValues(b);
+  b[6] = (b[6] & 0x0f) | 0x40;
+  b[8] = (b[8] & 0x3f) | 0x80;
+  var h = Array.from(b).map(function(x){ return x.toString(16).padStart(2, '0'); }).join('');
+  return h.slice(0, 8) + '-' + h.slice(8, 12) + '-' + h.slice(12, 16) + '-' + h.slice(16, 20) + '-' + h.slice(20);
+}
+function genUuids() {
+  var n = +document.getElementById('uuidCount').value, out = [];
+  for (var i = 0; i < n; i++) out.push(uuidv4());
+  document.getElementById('uuidOut').textContent = out.join('\n');
+}
+genUuids();
+</script>
+</body></html>

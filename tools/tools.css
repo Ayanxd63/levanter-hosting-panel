@@ -1,0 +1,72 @@
+/* Free Tools — same dark navy + gold theme as the landing page.
+   Plain local CSS, system fonts only, zero external dependencies. */
+:root {
+  --bg: #0a0f1e; --bg-soft: #0d1428; --surface: #131a2e; --surface-2: #1a2340;
+  --border: #2a3555; --gold: #f5b301; --gold-soft: #ffd166; --gold-deep: #c98f00;
+  --text: #f1f5f9; --muted: #94a3b8; --link: #ffd166;
+  --green: #22c55e; --red: #ef4444;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+.wrap { max-width: 960px; margin: 0 auto; padding: 16px; }
+a { color: var(--link); }
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.brand-mark { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color: #1a1200; font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex: none; }
+.brand-name { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.02em; color: var(--text); line-height: 1.1; }
+.brand-name em { font-style: normal; color: var(--gold); }
+.brand-by { display: inline-block; margin-top: 2px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold-deep); border-radius: 999px; padding: 1px 8px; }
+nav a { color: var(--link); margin-right: 14px; text-decoration: none; font-weight: 600; }
+nav a:hover { text-decoration: underline; }
+h1 { font-size: 1.6rem; margin: 6px 0 8px; }
+h2 { font-size: 1.15rem; margin: 0 0 10px; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+.crumb { font-size: 0.85rem; color: var(--muted); margin: 0 0 4px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+label { display: block; margin-bottom: 12px; font-weight: 600; }
+label.inline { display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 8px; }
+input[type="text"], input[type="password"], input[type="number"], textarea, select { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #475569; border-radius: 8px; background: var(--bg-soft); color: var(--text); font-size: 1rem; font-family: inherit; }
+input[type="checkbox"] { width: auto; accent-color: var(--gold); }
+input[type="range"] { width: 100%; accent-color: var(--gold); }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(245, 179, 1, 0.25); }
+textarea { min-height: 90px; resize: vertical; }
+button { padding: 10px 16px; border: 0; border-radius: 8px; background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color: #1a1200; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin: 2px; }
+button:hover { filter: brightness(1.12); }
+button.ghost { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+button.ghost:hover { background: rgba(245, 179, 1, 0.12); }
+button.small-btn { padding: 6px 10px; font-size: 0.85rem; }
+.output { background: #020617; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 0.92rem; word-break: break-all; white-space: pre-wrap; min-height: 20px; }
+.output.big { font-size: 1.4rem; text-align: center; letter-spacing: 0.1em; }
+.mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+.privacy { color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 20px; }
+.note { background: var(--surface-2); border: 1px solid var(--border); border-left: 4px solid var(--gold); border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; font-size: 0.95rem; }
+.note.warn { border-left-color: var(--red); }
+.error { color: #fca5a5; }
+.ok { color: #86efac; }
+.meter { height: 14px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; border: 1px solid var(--border); margin: 8px 0; }
+.meter .fill { height: 100%; width: 0%; background: var(--red); transition: width 0.3s; }
+.score-label { font-weight: 800; font-size: 1.1rem; }
+.tool-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 20px 0; }
+.tool-card { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-decoration: none; color: var(--text); }
+.tool-card:hover { border-color: var(--gold); }
+.tool-card .icon { font-size: 1.5rem; margin-bottom: 6px; }
+.tool-card h3 { margin: 0 0 4px; font-size: 1.02rem; color: var(--gold); }
+.tool-card p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.kv { display: grid; grid-template-columns: 130px 1fr; gap: 6px 12px; margin: 10px 0; }
+.kv dt { color: var(--muted); font-size: 0.9rem; }
+.kv dd { margin: 0; word-break: break-all; }
+.qr-box { background: #fff; padding: 16px; border-radius: 12px; display: inline-block; margin: 10px 0; }
+.qr-box svg { display: block; }
+.big-code { font-size: 2.4rem; font-weight: 800; letter-spacing: 0.18em; text-align: center; font-family: ui-monospace, Consolas, monospace; }
+.progress { height: 8px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; border: 1px solid var(--border); margin-top: 8px; }
+.progress .fill { height: 100%; background: var(--gold); }
+.landing-footer { text-align: center; color: var(--muted); border-top: 1px solid var(--border); padding: 22px 0 10px; margin-top: 36px; font-size: 0.92rem; }
+.landing-footer strong { color: var(--gold); }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.row > * { flex: 1; min-width: 140px; }
+@media (max-width: 720px) {
+  .tool-grid { grid-template-columns: 1fr; }
+  .kv { grid-template-columns: 1fr; }
+  h1 { font-size: 1.35rem; }
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JWT Decoder — Free Tools | AYAN XD</title>
+<meta name="description" content="Decode a JSON Web Token to see its header and payload claims. Decoding is NOT verification — the signature is not checked here.">
+<link rel="stylesheet" href="tools.css">
+</head>
+<body><div class="wrap">
+<header><a class="brand" href="/"><span class="brand-mark">&#9889;</span><span><span class="brand-name">Levanter <em>Bot Hosting</em></span><br><span class="brand-by">by AYAN XD</span></span></a>
+<nav><a href="/">Home</a><a href="index.html">All Tools</a></nav></header>
+<main>
+<p class="crumb"><a href="/">Home</a> &middot; <a href="index.html">Free Tools</a> &middot; JWT Decoder</p>
+<h1>&#128272; JWT Decoder</h1>
+<p class="muted">Decode a JSON Web Token to see its header and payload claims. Decoding is NOT verification — the signature is not checked here.</p>
+<div class="note warn"><strong>Important:</strong> decoding a JWT only reads it — it does <strong>not</strong> verify the signature. A token shown here may be expired, forged or tampered with. Never trust a token based on this decode alone.</div>
+<div class="card">
+<label>Paste a JWT (header.payload.signature)
+<textarea id="jwtin" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U"></textarea></label>
+<button onclick="decodeJwt()">Decode token</button>
+</div>
+<div class="card"><h2>Header</h2><div class="output" id="jwtHead">—</div></div>
+<div class="card"><h2>Payload</h2><div class="output" id="jwtPay">—</div>
+<p class="muted small" id="jwtDates"></p></div>
+<div class="card"><h2>Signature</h2><div class="output" id="jwtSig">—</div>
+<p class="muted small">The signature is shown only as a short preview. This tool cannot verify it — verification needs the secret or public key.</p></div>
+<p class="error" id="jwterr"></p>
+<p class="privacy">&#128274; 100% client-side &mdash; everything you type stays in your browser. Nothing is sent to any server, and nothing is stored.</p>
+</main>
+<footer class="landing-footer">Developed by <strong>AYAN XD</strong> &middot; <a href="/">ayanxd.cc.cd</a> &middot; Free forever</footer>
+</div>
+<script>
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.value !== undefined ? el.value : el.textContent;
+  if (!text) return;
+  function done() { if (btn) { var old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'note'; document.querySelector('main').appendChild(t); }
+  t.textContent = msg;
+}
+</script>
+<script>
+function b64urlDecode(s) {
+  s = s.replace(/-/g, '+').replace(/_/g, '/');
+  s += '='.repeat((4 - s.length % 4) % 4);
+  var bin = atob(s), bytes = Uint8Array.from(bin, function(c){ return c.charCodeAt(0); });
+  return new TextDecoder().decode(bytes);
+}
+function fmtDate(sec) {
+  if (typeof sec !== 'number') return null;
+  return new Date(sec * 1000).toLocaleString();
+}
+function decodeJwt() {
+  var err = document.getElementById('jwterr'); err.textContent = '';
+  var tok = document.getElementById('jwtin').value.trim();
+  var parts = tok.split('.');
+  if (parts.length !== 3) { err.textContent = 'Not a JWT: a token has three parts separated by dots.'; return; }
+  try {
+    var head = JSON.parse(b64urlDecode(parts[0]));
+    var pay = JSON.parse(b64urlDecode(parts[1]));
+    document.getElementById('jwtHead').textContent = JSON.stringify(head, null, 2);
+    document.getElementById('jwtPay').textContent = JSON.stringify(pay, null, 2);
+    document.getElementById('jwtSig').textContent = parts[2].slice(0, 24) + '… (' + parts[2].length + ' chars)';
+    var dates = [];
+    if (pay.iat) dates.push('Issued: ' + fmtDate(pay.iat));
+    if (pay.nbf) dates.push('Not valid before: ' + fmtDate(pay.nbf));
+    if (pay.exp) {
+      dates.push('Expires: ' + fmtDate(pay.exp) + (pay.exp * 1000 < Date.now() ? ' — EXPIRED' : ' — still valid'));
+    }
+    document.getElementById('jwtDates').textContent = dates.join(' · ');
+  } catch (e) { err.textContent = 'Could not decode this token: ' + e.message; }
+}
+</script>
+</body></html>

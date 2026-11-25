@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR Code Generator — Free Tools | AYAN XD</title>
+<meta name="description" content="Turn any text or link into a scannable QR code. The QR is generated in your browser — scan it with any phone camera.">
+<link rel="stylesheet" href="tools.css">
+<script src="vendor/qrcode.min.js"></script></head>
+<body><div class="wrap">
+<header><a class="brand" href="/"><span class="brand-mark">&#9889;</span><span><span class="brand-name">Levanter <em>Bot Hosting</em></span><br><span class="brand-by">by AYAN XD</span></span></a>
+<nav><a href="/">Home</a><a href="index.html">All Tools</a></nav></header>
+<main>
+<p class="crumb"><a href="/">Home</a> &middot; <a href="index.html">Free Tools</a> &middot; QR Code Generator</p>
+<h1>&#128444; QR Code Generator</h1>
+<p class="muted">Turn any text or link into a scannable QR code. The QR is generated in your browser — scan it with any phone camera.</p>
+<div class="card">
+<label>Text or link
+<textarea id="qrIn" placeholder="e.g. https://ayanxd.cc.cd/">https://ayanxd.cc.cd/</textarea></label>
+<div class="row">
+<label>Error correction
+<select id="qrLevel"><option value="L">L — low (7%)</option><option value="M" selected>M — medium (15%)</option><option value="Q">Q — quartile (25%)</option><option value="H">H — high (30%)</option></select></label>
+<label>Size
+<select id="qrSize"><option value="4">Small</option><option value="6" selected>Medium</option><option value="10">Large</option></select></label>
+</div>
+<button onclick="makeQr()">Generate QR code</button>
+</div>
+<div class="card"><h2>Your QR code</h2>
+<div class="qr-box" id="qrOut"></div>
+<div class="row"><button class="ghost" onclick="downloadQr()">Download SVG</button></div>
+<p class="muted small">Tip: point your phone camera at the code to scan it. Higher error correction still scans if the code is partly damaged.</p>
+<p class="error" id="qrErr"></p></div>
+<p class="privacy">&#128274; 100% client-side &mdash; everything you type stays in your browser. Nothing is sent to any server, and nothing is stored.</p>
+</main>
+<footer class="landing-footer">Developed by <strong>AYAN XD</strong> &middot; <a href="/">ayanxd.cc.cd</a> &middot; Free forever</footer>
+</div>
+<script>
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.value !== undefined ? el.value : el.textContent;
+  if (!text) return;
+  function done() { if (btn) { var old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'note'; document.querySelector('main').appendChild(t); }
+  t.textContent = msg;
+}
+</script>
+<script>
+function makeQr() {
+  var err = document.getElementById('qrErr'); err.textContent = '';
+  var text = document.getElementById('qrIn').value;
+  if (!text) { err.textContent = 'Type some text or a link first.'; return; }
+  try {
+    var qr = qrcode(0, document.getElementById('qrLevel').value);
+    qr.addData(text);
+    qr.make();
+    var size = +document.getElementById('qrSize').value;
+    document.getElementById('qrOut').innerHTML = qr.createSvgTag({ cellSize: size, margin: 4, scalable: true });
+  } catch (e) { err.textContent = 'Could not make a QR code: ' + e.message; }
+}
+function downloadQr() {
+  var svg = document.querySelector('#qrOut svg');
+  if (!svg) return;
+  var blob = new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'qr-code.svg';
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+}
+makeQr();
+</script>
+</body></html>

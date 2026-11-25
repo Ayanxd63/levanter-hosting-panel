@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morse Code Encoder / Decoder — Free Tools | AYAN XD</title>
+<meta name="description" content="Turn text into Morse code (dots and dashes) or decode Morse code back into text.">
+<link rel="stylesheet" href="tools.css">
+</head>
+<body><div class="wrap">
+<header><a class="brand" href="/"><span class="brand-mark">&#9889;</span><span><span class="brand-name">Levanter <em>Bot Hosting</em></span><br><span class="brand-by">by AYAN XD</span></span></a>
+<nav><a href="/">Home</a><a href="index.html">All Tools</a></nav></header>
+<main>
+<p class="crumb"><a href="/">Home</a> &middot; <a href="index.html">Free Tools</a> &middot; Morse Code Encoder / Decoder</p>
+<h1>&#128276; Morse Code Encoder / Decoder</h1>
+<p class="muted">Turn text into Morse code (dots and dashes) or decode Morse code back into text.</p>
+<div class="card">
+<label>Input
+<textarea id="morseIn" placeholder="Type text to encode, or Morse code like .... . .-.. .-.. --- to decode"></textarea></label>
+<div class="row"><button onclick="doMorse('encode')">Encode to Morse</button><button onclick="doMorse('decode')">Decode from Morse</button>
+<button class="ghost" onclick="swapMorse()">Swap input / output</button></div>
+<p class="muted small">Encoding: letters are separated by a space, words by / . Decoding expects the same format.</p>
+</div>
+<div class="card"><h2>Output</h2>
+<div class="output" id="morseOut">—</div>
+<div class="row" style="margin-top:10px"><button class="ghost" onclick="copyText('morseOut', this)">Copy output</button></div>
+<p class="error" id="morseErr"></p></div>
+<p class="privacy">&#128274; 100% client-side &mdash; everything you type stays in your browser. Nothing is sent to any server, and nothing is stored.</p>
+</main>
+<footer class="landing-footer">Developed by <strong>AYAN XD</strong> &middot; <a href="/">ayanxd.cc.cd</a> &middot; Free forever</footer>
+</div>
+<script>
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.value !== undefined ? el.value : el.textContent;
+  if (!text) return;
+  function done() { if (btn) { var old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'note'; document.querySelector('main').appendChild(t); }
+  t.textContent = msg;
+}
+</script>
+<script>
+var MORSE = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.", "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.", "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-", "V": "...-", "W": ".--", "X": "-..-", "Y": "-.--", "Z": "--..", "0": "-----", "1": ".----", "2": "..---", "3": "...--", "4": "....-", "5": ".....", "6": "-....", "7": "--...", "8": "---..", "9": "----.", ".": ".-.-.-", ",": "--..--", "?": "..--..", "'": ".----.", "!": "-.-.--", "/": "-..-.", "(": "-.--.", ")": "-.--.-", "&": ".-...", ":": "---...", ";": "-.-.-.", "=": "-...-", "+": ".-.-.", "-": "-....-", "_": "..--.-", "\"": ".-..-.", "$": "...-..-", "@": ".--.-."};
+var MORSE_REV = {};
+Object.keys(MORSE).forEach(function(k){ MORSE_REV[MORSE[k]] = k; });
+function morseEncode(text) {
+  return text.toUpperCase().split(' ').map(function(word){
+    return word.split('').map(function(ch){
+      return MORSE[ch] || (ch === '' ? '' : '?');
+    }).join(' ');
+  }).join(' / ');
+}
+function morseDecode(code) {
+  var bad = [];
+  var out = code.trim().split(' / ').map(function(word){
+    return word.trim().split(/\s+/).map(function(sym){
+      if (MORSE_REV[sym]) return MORSE_REV[sym];
+      bad.push(sym); return '?';
+    }).join('');
+  }).join(' ');
+  return { text: out, bad: bad };
+}
+function doMorse(mode) {
+  var err = document.getElementById('morseErr'); err.textContent = '';
+  var v = document.getElementById('morseIn').value;
+  if (mode === 'encode') {
+    document.getElementById('morseOut').textContent = morseEncode(v);
+  } else {
+    var r = morseDecode(v);
+    document.getElementById('morseOut').textContent = r.text;
+    if (r.bad.length) err.textContent = 'Unknown Morse symbols (shown as ?): ' + r.bad.slice(0, 5).join(', ');
+  }
+}
+function swapMorse() {
+  var inp = document.getElementById('morseIn'), out = document.getElementById('morseOut');
+  if (out.textContent && out.textContent !== '—') { inp.value = out.textContent; out.textContent = '—'; }
+}
+</script>
+</body></html>

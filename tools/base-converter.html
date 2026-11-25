@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Binary / Decimal / Hex Converter — Free Tools | AYAN XD</title>
+<meta name="description" content="Convert numbers between binary, decimal and hexadecimal. Works with very large numbers too.">
+<link rel="stylesheet" href="tools.css">
+</head>
+<body><div class="wrap">
+<header><a class="brand" href="/"><span class="brand-mark">&#9889;</span><span><span class="brand-name">Levanter <em>Bot Hosting</em></span><br><span class="brand-by">by AYAN XD</span></span></a>
+<nav><a href="/">Home</a><a href="index.html">All Tools</a></nav></header>
+<main>
+<p class="crumb"><a href="/">Home</a> &middot; <a href="index.html">Free Tools</a> &middot; Binary / Decimal / Hex Converter</p>
+<h1>&#128290; Binary / Decimal / Hex Converter</h1>
+<p class="muted">Convert numbers between binary, decimal and hexadecimal. Works with very large numbers too.</p>
+<div class="card">
+<label>Number
+<input type="text" id="numIn" placeholder="e.g. 255 or ff or 11111111" oninput="convertBase()"></label>
+<label>Input base
+<select id="numBase" onchange="convertBase()">
+<option value="10" selected>Decimal (base 10)</option>
+<option value="2">Binary (base 2)</option>
+<option value="16">Hexadecimal (base 16)</option>
+<option value="8">Octal (base 8)</option>
+</select></label>
+</div>
+<div class="card"><h2>Converted</h2>
+<dl class="kv">
+<dt>Binary</dt><dd><span class="mono" id="outBin">—</span></dd>
+<dt>Octal</dt><dd><span class="mono" id="outOct">—</span></dd>
+<dt>Decimal</dt><dd><span class="mono" id="outDec">—</span></dd>
+<dt>Hexadecimal</dt><dd><span class="mono" id="outHex">—</span></dd>
+</dl>
+<p class="error" id="convErr"></p></div>
+<p class="privacy">&#128274; 100% client-side &mdash; everything you type stays in your browser. Nothing is sent to any server, and nothing is stored.</p>
+</main>
+<footer class="landing-footer">Developed by <strong>AYAN XD</strong> &middot; <a href="/">ayanxd.cc.cd</a> &middot; Free forever</footer>
+</div>
+<script>
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.value !== undefined ? el.value : el.textContent;
+  if (!text) return;
+  function done() { if (btn) { var old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'note'; document.querySelector('main').appendChild(t); }
+  t.textContent = msg;
+}
+</script>
+<script>
+function parseBig(s, base) {
+  s = s.trim().replace(/^(0x|0b|0o)/i, '');
+  var neg = false;
+  if (s.charAt(0) === '-') { neg = true; s = s.slice(1); }
+  if (!s) throw new Error('Enter a number first.');
+  var digits = '0123456789abcdefghijklmnopqrstuvwxyz', v = 0n, B = BigInt(base);
+  for (var i = 0; i < s.length; i++) {
+    var d = digits.indexOf(s[i].toLowerCase());
+    if (d < 0 || d >= base) throw new Error('Invalid digit "' + s[i] + '" for base ' + base + '.');
+    v = v * B + BigInt(d);
+  }
+  return neg ? -v : v;
+}
+function convertBase() {
+  var err = document.getElementById('convErr'); err.textContent = '';
+  try {
+    var v = parseBig(document.getElementById('numIn').value, +document.getElementById('numBase').value);
+    document.getElementById('outBin').textContent = v.toString(2);
+    document.getElementById('outOct').textContent = v.toString(8);
+    document.getElementById('outDec').textContent = v.toString(10);
+    document.getElementById('outHex').textContent = v.toString(16).toUpperCase();
+  } catch (e) {
+    err.textContent = e.message;
+    ['outBin', 'outOct', 'outDec', 'outHex'].forEach(function(id){ document.getElementById(id).textContent = '—'; });
+  }
+}
+</script>
+</body></html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>URL Encoder / Decoder — Free Tools | AYAN XD</title>
+<meta name="description" content="Percent-encode text for safe use in URLs, or decode a percent-encoded URL back to readable text.">
+<link rel="stylesheet" href="tools.css">
+</head>
+<body><div class="wrap">
+<header><a class="brand" href="/"><span class="brand-mark">&#9889;</span><span><span class="brand-name">Levanter <em>Bot Hosting</em></span><br><span class="brand-by">by AYAN XD</span></span></a>
+<nav><a href="/">Home</a><a href="index.html">All Tools</a></nav></header>
+<main>
+<p class="crumb"><a href="/">Home</a> &middot; <a href="index.html">Free Tools</a> &middot; URL Encoder / Decoder</p>
+<h1>&#128279; URL Encoder / Decoder</h1>
+<p class="muted">Percent-encode text for safe use in URLs, or decode a percent-encoded URL back to readable text.</p>
+<div class="card">
+<label>Input
+<textarea id="urlin" placeholder="Type a URL or text"></textarea></label>
+<div class="row"><button onclick="doUrl('encode')">Encode</button><button onclick="doUrl('decode')">Decode</button>
+<button class="ghost" onclick="swapUrl()">Swap input / output</button></div>
+</div>
+<div class="card"><h2>Output</h2>
+<div class="output" id="urlout">—</div>
+<div class="row" style="margin-top:10px"><button class="ghost" onclick="copyText('urlout', this)">Copy output</button></div>
+<p class="error" id="urlerr"></p></div>
+<p class="privacy">&#128274; 100% client-side &mdash; everything you type stays in your browser. Nothing is sent to any server, and nothing is stored.</p>
+</main>
+<footer class="landing-footer">Developed by <strong>AYAN XD</strong> &middot; <a href="/">ayanxd.cc.cd</a> &middot; Free forever</footer>
+</div>
+<script>
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.value !== undefined ? el.value : el.textContent;
+  if (!text) return;
+  function done() { if (btn) { var old = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+  } else { fallbackCopy(text); done(); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'note'; document.querySelector('main').appendChild(t); }
+  t.textContent = msg;
+}
+</script>
+<script>
+function doUrl(mode) {
+  var err = document.getElementById('urlerr'), out = document.getElementById('urlout');
+  err.textContent = '';
+  try {
+    var v = document.getElementById('urlin').value;
+    out.textContent = mode === 'encode' ? encodeURIComponent(v) : decodeURIComponent(v);
+  } catch (e) { out.textContent = '—'; err.textContent = 'Could not decode: invalid percent-encoding. ' + e.message; }
+}
+function swapUrl() {
+  var inp = document.getElementById('urlin'), out = document.getElementById('urlout');
+  if (out.textContent && out.textContent !== '—') { inp.value = out.textContent; out.textContent = '—'; }
+}
+</script>
+</body></html>
